@@ -1,7 +1,7 @@
 ﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
-namespace Itmo.ObjectOrientedProgramming.Lab2.Entities;
+namespace Itmo.ObjectOrientedProgramming.Lab2.Recipients;
 
 public interface IMessageRecipient
 {

@@ -1,5 +1,4 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Notification;
 
@@ -11,7 +10,6 @@ public class SoundNotificationSystem : INotificationSystem
             return new NotifyResult.Failure();
 
         Console.Beep();
-        Console.WriteLine($"[SOUND NOTIFICATION] {message}");
 
         return new NotifyResult.Success();
     }

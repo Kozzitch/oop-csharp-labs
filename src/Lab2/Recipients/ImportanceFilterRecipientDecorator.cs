@@ -1,5 +1,4 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Recipients;
@@ -17,11 +16,10 @@ public class ImportanceFilterRecipientDecorator : RecipientDecorator
     public override ReceiveResult Receive(Message? message)
     {
         if (message is null)
-            return new ReceiveResult.Failure();
+            return new ReceiveResult.Failure("Message cannot be empty", message);
 
-        // Guard clause logic
         if (message.Importance < _minimumImportance)
-            return new ReceiveResult.Success();
+            return new ReceiveResult.Filtered($"Message importance {message.Importance} is below minimum {_minimumImportance}");
 
         MessageRecipient.Receive(message);
 

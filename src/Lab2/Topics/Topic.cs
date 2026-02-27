@@ -1,7 +1,8 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Recipients;
+using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
-namespace Itmo.ObjectOrientedProgramming.Lab2.Entities;
+namespace Itmo.ObjectOrientedProgramming.Lab2.Topics;
 
 public class Topic
 {
@@ -26,17 +27,21 @@ public class Topic
         return new ArchiveResult.Success();
     }
 
-    public ReceiveResult Send(Message? message)
+    public IReadOnlyCollection<ReceiveResult> Send(Message? message)
     {
+        var results = new List<ReceiveResult>();
         if (message is null)
-            return new ReceiveResult.Failure();
+        {
+            results.Add(new ReceiveResult.Failure("Message cannot be empty", message));
+            return results;
+        }
 
         foreach (IMessageRecipient recipient in _recipients)
         {
-            recipient.Receive(message);
+            results.Add(recipient.Receive(message));
         }
 
-        return new ReceiveResult.Success();
+        return results;
     }
 
     public override string ToString() => $"Topic: {_name}";
