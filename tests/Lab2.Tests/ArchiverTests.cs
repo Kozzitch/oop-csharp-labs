@@ -1,4 +1,5 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Archivers;
+using Itmo.ObjectOrientedProgramming.Lab2.Formatters;
 using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 using Moq;
@@ -12,7 +13,7 @@ public class ArchiverTests
     public void FormattingArchiver_Archive_CallsFormatterAndInnerArchiver()
     {
         // Arrange
-        var mockFormatter = new Mock<IMessageFormatter>();
+        var mockFormatter = new Mock<MessageFormatter>();
         var mockInnerArchiver = new Mock<IMessageArchiver>();
         var formattingArchiver = new FormattingArchiver(mockFormatter.Object, mockInnerArchiver.Object);
         var message = new Message(Guid.NewGuid(), "Header", "Body", ImportanceLevel.Normal);
@@ -41,7 +42,7 @@ public class ArchiverTests
     public void FormattingArchiver_NullInnerArchiver_ThrowsArgumentNullException()
     {
         // Arrange
-        var mockFormatter = new Mock<IMessageFormatter>();
+        var mockFormatter = new Mock<MessageFormatter>();
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => new FormattingArchiver(mockFormatter.Object, null));
@@ -51,7 +52,7 @@ public class ArchiverTests
     public void FormattingArchiver_NullMessage_ThrowsArgumentNullException()
     {
         // Arrange
-        var mockFormatter = new Mock<IMessageFormatter>();
+        var mockFormatter = new Mock<MessageFormatter>();
         var mockInnerArchiver = new Mock<IMessageArchiver>();
         var formattingArchiver = new FormattingArchiver(mockFormatter.Object, mockInnerArchiver.Object);
         ArchiveResult result = formattingArchiver.Archive(null);
@@ -69,9 +70,9 @@ public class ArchiverTests
 
         // Act
         archiver.Archive(message);
+        IReadOnlyCollection<Message> messages = archiver.GetMessages();
 
         // Assert
-        IReadOnlyCollection<Message> messages = archiver.GetMessages();
         Assert.Single(messages);
         Assert.Contains(messages, m => m.Id == message.Id);
     }
@@ -82,9 +83,10 @@ public class ArchiverTests
         // Arrange
         var archiver = new InMemoryArchiver();
 
+        // Act
         ArchiveResult result = archiver.Archive(null);
 
-        // Act & Assert
+        // Assert
         Assert.IsType<ArchiveResult.Failure>(result);
     }
 }

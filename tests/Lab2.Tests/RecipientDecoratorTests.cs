@@ -1,4 +1,4 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Loggers;
 using Itmo.ObjectOrientedProgramming.Lab2.Recipients;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 using Moq;

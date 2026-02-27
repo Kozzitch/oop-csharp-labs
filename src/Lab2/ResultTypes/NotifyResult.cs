@@ -6,5 +6,7 @@ public abstract record NotifyResult
 
     public sealed record Success : NotifyResult;
 
+    public sealed record SuccessWithLog(LogResult LogResult) : NotifyResult;
+
     public sealed record Failure : NotifyResult;
 }

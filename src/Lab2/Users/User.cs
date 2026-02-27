@@ -1,7 +1,7 @@
 ﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
-namespace Itmo.ObjectOrientedProgramming.Lab2.Entities;
+namespace Itmo.ObjectOrientedProgramming.Lab2.Users;
 
 public class User
 {
@@ -17,8 +17,6 @@ public class User
 
         Id = id;
         Name = name;
-
-        // Field initialization in constructor per codestyle.md
         _messageStatuses = new Dictionary<Guid, MessageStatus>();
     }
 
@@ -29,9 +27,8 @@ public class User
     public ReceiveResult Receive(Message? message)
     {
         if (message is null)
-            return new ReceiveResult.Failure();
+            return new ReceiveResult.Failure("Message cannot be empty", message);
 
-        // Status exists only in user context
         _messageStatuses[message.Id] = MessageStatus.Unread;
         return new ReceiveResult.Success();
     }

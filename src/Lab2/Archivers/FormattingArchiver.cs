@@ -1,15 +1,15 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Formatters;
+using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
-namespace Itmo.ObjectOrientedProgramming.Lab2.Entities;
+namespace Itmo.ObjectOrientedProgramming.Lab2.Archivers;
 
-// Adapter Pattern: Adapts Formatter to Archiver
 public class FormattingArchiver : IMessageArchiver
 {
-    private readonly IMessageFormatter _formatter;
+    private readonly MessageFormatter _formatter;
     private readonly IMessageArchiver _innerArchiver;
 
-    public FormattingArchiver(IMessageFormatter? formatter, IMessageArchiver? innerArchiver)
+    public FormattingArchiver(MessageFormatter? formatter, IMessageArchiver? innerArchiver)
     {
         if (formatter is null)
             throw new ArgumentException("Formatter cannot be empty", nameof(formatter));
@@ -28,10 +28,16 @@ public class FormattingArchiver : IMessageArchiver
 
         FormatResult formattedMessage = _formatter.Format(message);
 
-        // In real scenario, save formattedMessage.
-        // Here we delegate to inner archiver for demonstration of chain.
+        if (formattedMessage is null)
+            return new ArchiveResult.Failure();
+
+        if (formattedMessage.FormatingString is null)
+            return new ArchiveResult.Failure();
+
         _innerArchiver.Archive(message);
 
+        // Или:
+        // _innerArchiver.Archive(new Message(message.Id, message.Header, formattedMessage.FormatingString, message.Importance));
         return new ArchiveResult.Success();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Loggers;
 using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Notification;
@@ -24,11 +24,11 @@ public class NotificationSystemProxy : INotificationSystem
     public NotifyResult Notify(string? message)
     {
         if (string.IsNullOrWhiteSpace(message))
-            return new NotifyResult.Success();
+            return new NotifyResult.Failure();
 
-        _logger.Log($"Notification requested: {message}");
+        LogResult logResult = _logger.Log($"Notification requested: {message}");
         _realSystem.Notify(message);
 
-        return new NotifyResult.Success();
+        return new NotifyResult.SuccessWithLog(logResult);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Notification;
 using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
@@ -7,7 +7,7 @@ namespace Itmo.ObjectOrientedProgramming.Lab2.Recipients;
 public class NotificationRecipient : IMessageRecipient
 {
     private readonly INotificationSystem _notificationSystem;
-    private readonly List<string> _suspiciousWords;
+    private readonly IReadOnlyCollection<string> _suspiciousWords;
 
     public NotificationRecipient(INotificationSystem notificationSystem, IEnumerable<string> suspiciousWords)
     {
@@ -19,14 +19,13 @@ public class NotificationRecipient : IMessageRecipient
 
         _notificationSystem = notificationSystem;
 
-        // Convert to list in constructor
         _suspiciousWords = suspiciousWords.ToList();
     }
 
     public ReceiveResult Receive(Message? message)
     {
         if (message is null)
-            return new ReceiveResult.Failure();
+            return new ReceiveResult.Failure("Message cannot be empty", message);
 
         foreach (string word in _suspiciousWords)
         {
