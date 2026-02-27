@@ -1,5 +1,5 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+using Itmo.ObjectOrientedProgramming.Lab2.Users;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 using Xunit;
 
@@ -18,7 +18,6 @@ public class UserTests
         user.Receive(message);
 
         // Assert
-        // Message is stored in user context with Unread status (verified by successful MarkAsRead)
         MarkAsReadResult result = user.MarkAsRead(message.Id);
         Assert.IsType<MarkAsReadResult.Success>(result);
     }

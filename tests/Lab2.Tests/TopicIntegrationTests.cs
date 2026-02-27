@@ -1,6 +1,8 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.Recipients;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.Recipients;
 using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+using Itmo.ObjectOrientedProgramming.Lab2.Topics;
+
+using Itmo.ObjectOrientedProgramming.Lab2.Users;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 using Moq;
 using Xunit;
@@ -17,7 +19,6 @@ public class TopicIntegrationTests
         var userRecipient1 = new UserRecipient(user);
         var userRecipient2 = new UserRecipient(user);
 
-        // Second recipient has importance filter (High minimum)
         var filteredRecipient2 = new ImportanceFilterRecipientDecorator(
             userRecipient2,
             ImportanceLevel.High);
@@ -26,20 +27,14 @@ public class TopicIntegrationTests
         topic.AddRecipient(userRecipient1);
         topic.AddRecipient(filteredRecipient2);
 
-        // Low importance message (should not pass filter)
         var lowMessage = new Message(Guid.NewGuid(), "Header", "Body", ImportanceLevel.Low);
 
         // Act
-        topic.Send(lowMessage);
+        IReadOnlyCollection<ReceiveResult> receiveResult = topic.Send(lowMessage);
 
         // Assert
-        // User should receive message only once (from first recipient, not from filtered second)
-        MarkAsReadResult markResult = user.MarkAsRead(lowMessage.Id);
-        Assert.IsType<MarkAsReadResult.Success>(markResult);
-
-        // Second attempt should fail (message was read already, received only once)
-        MarkAsReadResult secondMarkResult = user.MarkAsRead(lowMessage.Id);
-        Assert.IsType<MarkAsReadResult.AlreadyRead>(secondMarkResult);
+        Assert.IsType<ReceiveResult.Success>(receiveResult.ElementAt(0));
+        Assert.IsType<ReceiveResult.Filtered>(receiveResult.ElementAt(1));
     }
 
     [Fact]
@@ -60,10 +55,10 @@ public class TopicIntegrationTests
         topic.Send(message);
 
         // Assert
-        // Message received twice (once from each recipient)
-        // First MarkAsRead should succeed
         MarkAsReadResult firstResult = user.MarkAsRead(message.Id);
         Assert.IsType<MarkAsReadResult.Success>(firstResult);
+        MarkAsReadResult secondMarkResult = user.MarkAsRead(message.Id);
+        Assert.IsType<MarkAsReadResult.AlreadyRead>(secondMarkResult);
     }
 
     [Fact]
@@ -71,9 +66,11 @@ public class TopicIntegrationTests
     {
         // Arrange
         var topic = new Topic("Test Topic");
+
+        // Act
         ArchiveResult result = topic.AddRecipient(null);
 
-        // Act & Assert
+        // Assert
         Assert.IsType<ArchiveResult.Failure>(result);
     }
 
@@ -83,10 +80,12 @@ public class TopicIntegrationTests
         // Arrange
         var topic = new Topic("Test Topic");
         topic.AddRecipient(new Mock<IMessageRecipient>().Object);
-        ReceiveResult result = topic.Send(null);
 
-        // Act & Assert
-        Assert.IsType<ReceiveResult.Failure>(result);
+        // Act
+        IReadOnlyCollection<ReceiveResult> result = topic.Send(null);
+
+        // Assert
+        Assert.IsType<ReceiveResult.Failure>(result.ElementAt(0));
     }
 
     [Fact]

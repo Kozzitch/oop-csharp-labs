@@ -1,5 +1,5 @@
-﻿using Itmo.ObjectOrientedProgramming.Lab2.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+﻿using Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
+using Itmo.ObjectOrientedProgramming.Lab2.Users;
 using Itmo.ObjectOrientedProgramming.Lab2.ValueObjects;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Recipients;
@@ -19,7 +19,7 @@ public class UserRecipient : IMessageRecipient
     public ReceiveResult Receive(Message? message)
     {
         if (message is null)
-            return new ReceiveResult.Failure();
+            return new ReceiveResult.Failure("Message cannot be empty", message);
 
         _user.Receive(message);
 

@@ -4,7 +4,7 @@ namespace Itmo.ObjectOrientedProgramming.Lab2.ResultTypes;
 
 public abstract record FormatResult
 {
-    public abstract Message? Message { get; }
+    public abstract Message? MessageBase { get; }
 
     public abstract string? FormatingString { get; }
 
@@ -12,9 +12,9 @@ public abstract record FormatResult
 
     private FormatResult() { }
 
-    public sealed record Success(string? FormatingString, Message Message) : FormatResult
+    public sealed record Success(string FormatingString, Message Message) : FormatResult
     {
-        public override Message? Message { get; } = Message;
+        public override Message? MessageBase { get; } = Message;
 
         public override string? FormatingString { get; } = FormatingString;
 
@@ -23,7 +23,7 @@ public abstract record FormatResult
 
     public sealed record Failure(string? Fault, Message? Message) : FormatResult
     {
-        public override Message? Message { get; } = Message;
+        public override Message? MessageBase { get; } = Message;
 
         public override string? FormatingString { get; } = null;
 
